@@ -1,0 +1,21 @@
+.navContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #021c53;
+    height: 40px;
+    font-size: 1.5rem;
+
+    a { 
+        text-decoration: none;
+        color: #fff;
+        margin-left: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+    }
+  
+}
+
+

@@ -1,0 +1,99 @@
+.phonebookContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 1px solid;
+    padding: 65px;
+    width: 50%;
+    margin-bottom: 30px;
+
+ 
+
+    .title {
+        width: 100%;
+        margin: 0;
+        font-size: 1.7rem;
+        font-family: 'Open Sans', sans-serif;
+        padding-bottom: 10px;
+        align-items: center;
+        text-align: center;
+    }
+
+    .inputText, select, textarea {
+        width: 65%; 
+        border: 2px solid #000000;
+            -webkit-transition: 0.5s;
+        transition: 0.5s;
+        box-sizing: border-box;
+        font-size: 1.7rem;
+        font-family: 'Open Sans', sans-serif;
+        padding: 12px 20px;
+        margin-bottom: 35px;
+       
+    }
+  
+    .inputText.middle:focus,
+    .inputText:active,
+    .inputText:focus {
+        border: 2px solid #1a60f8;
+        outline-width: 0;
+        box-shadow: #1a60f8 0px 0px 10px 2px;
+        
+    }
+    
+
+    .phonebookList {
+            list-style-type: none;  
+            width: 100%;
+            gap: 10px;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+
+            .ContactContainer {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                margin: 0 2px 0 0;
+
+                .ListContainer {
+                    display: flex;
+                    gap: 20px;
+                    align-items: center;
+                    justify-content: center;
+
+                    .CheckBox {
+                        input {
+                            width: 30px;
+                            height: 30px;
+                        }
+                    }
+                }
+
+                .buttonContact {
+                    width: 25%;
+                    height: 100%;
+                    border: 1px solid rgb(26, 96, 248);
+                    font-size: 1.2rem;
+                    font-family: 'Open Sans', sans-serif;
+                    background-color: rgb(26, 96, 248);
+                    color: white;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 10px;
+                    
+                  }
+                
+                  .buttonContact:active {
+                    border: 1px solid rgb(255, 255, 255);
+                  }
+
+            }
+
+            
+    }
+    
+    
+
+}

@@ -1,0 +1,79 @@
+.phonebookContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid;
+  padding: 65px;
+  width: 50%;
+  margin-bottom: 30px;
+ 
+  .phonebookTitle {
+   width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    h2 {
+      margin: 0;
+      margin: 0;
+      font-size: 3rem;
+      padding-bottom: 10px;
+    }
+   
+  }
+
+  .title {
+    margin: 0;
+    font-size: 1.7rem;
+    font-family: 'Open Sans', sans-serif;
+    padding-bottom: 10px;
+  }
+
+  .inputText,
+  select,
+  textarea {
+    width: 100%;
+    border: 2px solid;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    box-sizing: border-box;
+    font-size: 1.7rem;
+    font-family: 'Open Sans', sans-serif;
+    padding: 12px 20px;
+    margin-bottom: 35px;
+    background-color: #fff;
+  }
+
+    .inputText.middle:focus,
+    .inputText:active,
+    .inputText:focus {
+      border: 2px solid #1a60f8;
+        box-shadow: #1a60f8 0px 0px 10px 2px;
+        outline-width: 0;
+        
+    }
+
+  .inputText::placeholder {
+    color: rgb(0, 0, 0);
+  }
+
+ 
+
+  .buttonContact:active {
+    border: 1px solid rgb(255, 255, 255);
+  }
+}
+
+.buttonContact {
+  width: 60%;
+  height: 55px;
+  border: 1px solid rgb(26, 96, 248);
+  font-size: 1.4rem;
+  font-family: 'Open Sans', sans-serif;
+  background-color: rgb(26, 96, 248);
+  color: white;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
