@@ -8,6 +8,7 @@ import Navbar from './Navbar/Navbar';
 import { logoutUser } from './redux/authSlice';
 import { getIsLoggedIn } from './redux/selectors';
 import styles from './Login/Login.module.css';
+import Calculator from './Calculator/Calculator';
 
 export const App = () => {
   const isLoggedIn = useSelector(getIsLoggedIn);
@@ -23,17 +24,15 @@ export const App = () => {
       <div
         className={styles.appContainer}>
         <header>
-        {isLoggedIn ? (
-            <Navbar onLogout={handleLogout} />
-          ) : (
-            <div className={styles.navLink}>Welcome</div>
-          )}
-          
+
+            <Navbar />
+
         </header>
         <main className={styles.compoenentContainer}>
-              <h1>AEM Contact Agenda</h1>
+             
           <Routes>
-            <Route path="/" element={<Navigate to={isLoggedIn ? "/goit-react-hw-08-phonebook" : "/login"} />} />
+            <Route path="/" element={<Navigate to={isLoggedIn ? "/goit-react-hw-08-phonebook" : "/home"} />} />
+            <Route path="/home" element ={ <Calculator /> } />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/goit-react-hw-08-phonebook" element={isLoggedIn ? <Phonebook /> : <Navigate to="/login" />} />
