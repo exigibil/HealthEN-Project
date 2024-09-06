@@ -26,21 +26,28 @@ const Register = () => {
     },
     validationSchema: Yup.object({
       username: Yup.string().required('Username is required'),
-      email: Yup.string().email('Invalid email address').required('Email is required'),
-      password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
-      repeatPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required('Repeat Password is required'),
+      email: Yup.string()
+        .email('Invalid email address')
+        .required('Email is required'),
+      password: Yup.string()
+        .min(8, 'Password must be at least 8 characters')
+        .required('Password is required'),
+      repeatPassword: Yup.string()
+        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+        .required('Repeat Password is required'),
     }),
     onSubmit: async values => {
       const { username, email, password } = values;
       try {
-        await dispatch(registerUser({ name: username, email, password })).unwrap();
+        await dispatch(
+          registerUser({ name: username, email, password })
+        ).unwrap();
         navigate('/login');
       } catch (error) {
         handleError(error);
       }
     },
   });
-
 
   const getPasswordStrength = password => {
     if (password.length < 6) return 1;
@@ -64,17 +71,21 @@ const Register = () => {
     for (let i = 1; i <= 4; i++) {
       let className = styles.strengthSegment;
       if (i <= passwordStrength) {
-        className += i === 1 ? ` ${styles.veryWeak}` : 
-                      i === 2 ? ` ${styles.weak}` :
-                      i === 3 ? ` ${styles.medium}` : 
-                                ` ${styles.strong}`;
+        className +=
+          i === 1
+            ? ` ${styles.veryWeak}`
+            : i === 2
+            ? ` ${styles.weak}`
+            : i === 3
+            ? ` ${styles.medium}`
+            : ` ${styles.strong}`;
       }
       segments.push(<div key={i} className={className}></div>);
     }
     return <div className={styles.strengthBar}>{segments}</div>;
   };
 
-  const handleError = (error) => {
+  const handleError = error => {
     if (error.response && error.response.data) {
       const errorMessage = error.response.data.message || 'An error occurred';
       alert(errorMessage);
@@ -83,19 +94,17 @@ const Register = () => {
     }
   };
 
-
-
   return (
     <div className={styles.boxForm}>
       <div className={styles.registerBox}>
         <div className={styles.gradient}></div>
         <form onSubmit={formik.handleSubmit} className={styles.form}>
           <div className={styles.logoGroup}>
-            <span className={styles.title}>Agenda Register</span>
+            <span className={styles.title}>User Register</span>
           </div>
 
           <div className={styles.labelBox}>
-            <label htmlFor="username" className={styles.label}></label>
+           
             <div className={styles.inputBox}>
               <FaUser className={styles.userIcon} />
               <input
@@ -112,7 +121,7 @@ const Register = () => {
           </div>
 
           <div className={styles.labelBox}>
-            <label htmlFor="email" className={styles.label}></label>
+           
             <div className={styles.inputBox}>
               <MdEmail className={styles.emailIcon} />
               <input
@@ -129,7 +138,7 @@ const Register = () => {
           </div>
 
           <div className={styles.labelBox}>
-            <label htmlFor="password" className={styles.label}></label>
+            
             <div className={styles.inputBox}>
               <IoMdLock className={styles.passwordIcon} />
               <input
@@ -158,7 +167,7 @@ const Register = () => {
           </div>
 
           <div className={styles.labelBox}>
-            <label htmlFor="repeatPassword" className={styles.label}></label>
+           
             <div className={styles.inputBox}>
               <IoMdLock className={styles.passwordIcon} />
               <input
@@ -188,12 +197,18 @@ const Register = () => {
           </div>
 
           <div className={styles.buttonBox}>
-            <button type="submit" className={styles.registerButton}>
-              Register
-            </button>
-            <button type="button" className={styles.loginButton}>
-              <Link to="/login">Login</Link>
-            </button>
+            <div>
+              <button className={styles.registerButton}>
+                <Link to="/register">Register</Link>
+              </button>
+            </div>
+
+            <div className={styles.loginButtonContainer}>
+              <button type="submit" className={styles.loginButton}>
+                Log in
+              </button>
+            </div>
+
           </div>
         </form>
       </div>

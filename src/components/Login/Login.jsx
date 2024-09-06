@@ -27,7 +27,7 @@ const LoginPage = () => {
       const { email, password } = values;
       try {
         await dispatch(loginUser({ email, password })).unwrap();
-        navigate('/goit-react-hw-08-phonebook');  
+        navigate('/HealthEN-Project');
       } catch (error) {
         console.error('Login failed:', error.message);
         alert('Login failed. Please check your credentials and try again.');
@@ -37,6 +37,10 @@ const LoginPage = () => {
 
   return (
     <div className={styles.appContainer}>
+      <span className={styles.titleLogin}>
+        <h2>LOG IN</h2>
+      </span>
+
       <form onSubmit={formik.handleSubmit} className={styles.loginForm}>
         <div className={styles.formGroup}>
           <label htmlFor="email" className={styles.formLabel}>
@@ -73,16 +77,24 @@ const LoginPage = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <button type="submit" className={styles.loginButton}>
-            Login
-          </button>
+          <div className={styles.buttonContainer}>
+            <div className={styles.loginButtonContainer}>
+              <button type="submit" className={styles.loginButton}>
+                Log in
+              </button>
+            </div>
+
+            <div>
+              <button className={styles.registerButton}>
+                <Link to="/register">
+                  Register
+                </Link>
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className={styles.formGroup}>
-          <Link to="/register" className={styles.registerButton}>
-            Register
-          </Link>
-        </div>
+        <div className={styles.formGroup}></div>
       </form>
     </div>
   );

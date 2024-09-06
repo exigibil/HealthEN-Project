@@ -6,8 +6,21 @@
   color: '#010101';
 }
 
+.titleLogin {
+  display: flex;
+  justify-content: center;
+  font-size: 14px;
+  h2 {
+    font-family: Verdana;
+    font-weight: 700;
+    line-height: 17.01px;
+    letter-spacing: 0.04em;
+    text-align: left;
+    color: #fc842d;
+  }
+}
 .compoenentContainer {
-  padding: 20px;
+  padding: 0px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,7 +38,9 @@
 
 .formGroup {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   position: relative;
   margin-bottom: 10px;
   width: 100%;
@@ -34,6 +49,7 @@
 .formLabel {
   display: flex;
   align-items: center;
+  justify-content: center;
   color: rgb(0, 0, 0);
   max-width: 100%;
   position: relative;
@@ -46,58 +62,66 @@
   left: 10px;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(69, 35, 219, 0.6);
+  color: #FC842D;
   font-size: 24px;
 }
 
+.buttonContainer {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  div {
+    width: 100%;
+  }
+}
+
 .loginButton {
-  border-radius: 20px;
-  max-height: 50px;
-  padding: 13px 0;
-  background: linear-gradient(
-    97deg,
-    #5cd1ff -16.42%,
-    #5e47e2d8 97.04%,
-    #04ebfc 150.71%
-  );
-  box-shadow: 1px 9px 15px 0px rgba(0, 0, 0, 0.2);
-  width: 140px;
-  border: none;
-  color: #000000;
+  width: 182px;
+  height: 44px;
+  padding: 13px 51px 13px 51px;
+  gap: 10px;
+  border-radius: 30px;
+  background: #fc842d;
+  box-shadow: 0px 4px 10px 0px #fc842d80;
+  border: 0px;
+  color: #ffffff;
+  font-family: Verdana;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 17.01px;
+  letter-spacing: 0.04em;
   text-align: center;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  letter-spacing: 1.8px;
+  transition: scale 250ms ease-in-out, box-shadow 250ms ease-in-out;
   text-transform: uppercase;
   cursor: pointer;
-  transition: scale 250ms ease-in-out, box-shadow 250ms ease-in-out;
 }
 
 .registerButton {
-  border-radius: 20px;
-  max-height: 50px;
-  padding: 13px 0;
-  background: linear-gradient(
-    97deg,
-    #7bcae9d8 -16.42%,
-    #7361dab2 97.04%,
-    #04ebfc4f 150.71%
-  );
-  box-shadow: 1px 9px 15px 0px rgba(0, 0, 0, 0.2);
-  width: 140px;
-  border: none;
-  color: #000000;
-  text-align: center;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  letter-spacing: 1.8px;
+  width: 182px;
+  height: 44px;
+  padding: 13px 51px 13px 51px;
+  gap: 10px;
+  border-radius: 30px;
+  background: #ffffff;
+  box-shadow: 0px 4px 10px 0px #fc842d80;
+  border: 1px solid #fc842d;
+
   text-transform: uppercase;
   cursor: pointer;
   transition: scale 250ms ease-in-out, box-shadow 250ms ease-in-out;
+
+  a {
+    text-decoration: none;
+    color: #fc842d;
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 17.01px;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
 }
 
 .registerButton:hover,
@@ -112,7 +136,12 @@
   background: transparent;
   border: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-  font-size: 18px;
+  font-family: Verdana;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 17.01px;
+  letter-spacing: 0.05em;
+
   color: rgba(
     0,
     0,
@@ -120,13 +149,17 @@
     0.9
   ); /* Folosește 0.9 în loc de 0.6 pentru a face textul mai vizibil */
   outline: none;
+
+  &::placeholder {
+    color: #9b9faa;
+  }
 }
 
 .formInput:focus {
   border-bottom: 1px solid rgba(255, 255, 255, 0.8);
 }
 
-.navLink{
+.navLink {
   display: flex;
   justify-content: center;
   align-items: center;

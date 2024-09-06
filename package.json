@@ -1,8 +1,8 @@
 {
-  "name": "goit-react-hw-08-phonebook",
+  "name": "HealthEN-Project",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://exigibil.github.io/goit-react-hw-08-phonebook/",
+  "homepage": "https://exigibil.github.io/HealthEN-Project/",
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
     "@reduxjs/toolkit": "^2.2.5",
