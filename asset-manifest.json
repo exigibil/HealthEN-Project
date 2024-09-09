@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Healthen-Project/static/css/main.9f1995c0.css",
+    "main.js": "/Healthen-Project/static/js/main.f3b01023.js",
+    "static/media/logo_logged.svg": "/Healthen-Project/static/media/logo_logged.76a7210086e11177a161fae73316c438.svg",
+    "static/media/logo_mobile.svg": "/Healthen-Project/static/media/logo_mobile.3b43297dab86a7fd1cb8579a81bf772f.svg",
+    "index.html": "/Healthen-Project/index.html",
+    "main.9f1995c0.css.map": "/Healthen-Project/static/css/main.9f1995c0.css.map",
+    "main.f3b01023.js.map": "/Healthen-Project/static/js/main.f3b01023.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9f1995c0.css",
+    "static/js/main.f3b01023.js"
+  ]
+}
