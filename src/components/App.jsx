@@ -30,7 +30,7 @@ export const App = () => {
         </header>
         <main className={styles.componentContainer}>
           <Routes>
-            <Route path="/" element={<Navigate to={isLoggedIn ? "/HealthEN-Project" : "/home"} />} />
+            <Route path="/" element={<Navigate to={isLoggedIn ? "/Healthen-Project" : "/home"} />} />
             <Route path="/home" element={<Calculator />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
