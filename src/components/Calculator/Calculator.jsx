@@ -10,6 +10,7 @@ function Calculator({ onStartLosingWeight })  {
   const [age, setAge] = useState('');
   const [currentWeight, setCurrentWeight] = useState('');
   const [desiredWeight, setDesiredWeight] = useState('');
+  const [bloodType, setBloodType] = useState('');
   const [calorieIntake, setCalorieIntake] = useState(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -27,7 +28,7 @@ function Calculator({ onStartLosingWeight })  {
     } else {
       setFormSubmitted(true);
       if (onStartLosingWeight) {
-        onStartLosingWeight(result); // Trimite rezultatul către Slimmom
+        onStartLosingWeight(result); 
       }
     }
   };
@@ -37,6 +38,7 @@ function Calculator({ onStartLosingWeight })  {
     setAge('');
     setCurrentWeight('');
     setDesiredWeight('');
+    setBloodType('');
     setCalorieIntake(null);
     setFormSubmitted(false);
   };
@@ -93,6 +95,24 @@ function Calculator({ onStartLosingWeight })  {
                   required
                 />
               </div>
+
+              <div className={styles.formRow}>
+                <label>Blood type:</label>
+                <div className={styles.radioGroup}>
+                  {['O', 'A', 'B', 'AB'].map(type => (
+                    <label className={styles.radioOption} key={type}>
+                      <input
+                        type="radio"
+                        name="bloodType"
+                        value={type}
+                        onChange={(e) => setBloodType(e.target.value)}
+                      />
+                      <span className={styles.customRadio}></span> {type}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
             </div>
 
             <div className={styles.buttonContainer}>

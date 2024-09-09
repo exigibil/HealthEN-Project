@@ -2,67 +2,84 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../redux/authSlice';
 import { useNavigate } from 'react-router-dom';
-import { ImExit } from 'react-icons/im';
 import styles from './Diary.module.css';
+import { FaRegCalendarAlt } from 'react-icons/fa';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import Footer from 'components/Footer/Footer';
 
 function Diary() {
   const [foods, setFoods] = useState([]);
   const [foodName, setFoodName] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [calories, setCalories] = useState(''); // Câmpul pentru kilocalorii
-
-  const user = useSelector((state) => state.auth.user);
+  const [calories, setCalories] = useState('');
+  const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    navigate('/login'); // Redirecționează la pagina de login după logout
-  };
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handleAddFood = () => {
-    if (foodName && quantity && calories) {
-      const newFood = { name: foodName, quantity, calories };
+    // Caută produsul în JSON
+    const product = productsData.find(p => p.title.toLowerCase() === foodName.toLowerCase());
+
+    if (product && quantity) {
+      // Calculează caloriile în funcție de greutatea introdusă
+      const calories = (product.calories / 100) * quantity;
+
+      const newFood = {
+        name: product.title,
+        quantity,
+        calories: parseInt(calories),
+      };
+
       setFoods([...foods, newFood]);
       setFoodName('');
       setQuantity('');
-      setCalories('');
     }
   };
 
+  const totalKcal = foods.reduce((total, food) => total + food.calories, 0);
+
   return (
     <>
-      <div className={styles.backContainer}>
-        <div className={styles.userName}>Welcome, {user.name}</div>
-        <div className={styles.dash}></div>
-        <div className={styles.exitContainer} onClick={handleLogout}>
-          <ImExit className={styles.exitIcon} /> <span>Exit</span>
-        </div>
-      </div>
-
       <div className={styles.diaryContainer}>
         <h2>Your Food Diary</h2>
+
+        <div className={styles.calendarContainer}>
+          <ReactDatePicker
+            selected={selectedDate}
+            onChange={date => setSelectedDate(date)}
+            customInput={<FaRegCalendarAlt className={styles.calendarIcon} />}
+            className={styles.datePicker}
+          />
+
+          <div className={styles.date}>
+            <div className={styles.dateText}>
+              {selectedDate ? selectedDate.toDateString() : 'Select a date'}
+            </div>
+          </div>
+        </div>
 
         <div className={styles.foodForm}>
           <input
             type="text"
-            placeholder="Food name"
+            placeholder="Product name"
             value={foodName}
             onChange={e => setFoodName(e.target.value)}
           />
           <input
             type="number"
-            placeholder="Quantity (grams)"
+            placeholder="Grams"
             value={quantity}
             onChange={e => setQuantity(e.target.value)}
           />
-          <input
-            type="number"
-            placeholder="Kilocalories"
-            value={calories}
-            onChange={e => setCalories(e.target.value)}
-          />
-          <button onClick={handleAddFood}>Add Food</button>
+           <div className={styles.kcal}> {totalKcal} Kcal</div>
+        </div>
+
+      
+
+        <div className={styles.buttonContainer}>
+          <button onClick={handleAddFood}>+</button>
         </div>
 
         <ul className={styles.foodList}>
@@ -73,6 +90,7 @@ function Diary() {
           ))}
         </ul>
       </div>
+      <Footer />
     </>
   );
 }

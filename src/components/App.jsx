@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import Slimmom from './Phonebook/Slimmom';
+import Slimmom from './Slimmom/Slimmom';
 import LoginPage from './Login/Login';
 import RegisterPage from './Register/Register';
 import Navbar from './Navbar/Navbar';

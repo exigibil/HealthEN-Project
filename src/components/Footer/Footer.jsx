@@ -1,6 +1,6 @@
 import styles from './Footer.module.css';
 
-function Diary() {
+function Footer() {
     return (
         <div className={styles.diaryContainer}>
 
@@ -28,4 +28,4 @@ function Diary() {
     );
 }
 
-export default Diary;
+export default Footer;
