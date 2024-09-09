@@ -1,8 +1,8 @@
 {
-  "name": "HealthEN-Project",
+  "name": "Healthen-Project",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://exigibil.github.io/HealthEN-Project/",
+  "homepage": "https://exigibil.github.io/Healthen-Project/",
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
     "@reduxjs/toolkit": "^2.2.5",
