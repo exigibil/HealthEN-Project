@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../redux/authSlice';
 import { MdEmail } from 'react-icons/md';
 import { IoMdLock } from 'react-icons/io';
@@ -16,6 +16,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [registerError, setRegisterError] = useState(null);
 
   const formik = useFormik({
     initialValues: {
@@ -36,34 +37,30 @@ const Register = () => {
         .oneOf([Yup.ref('password'), null], 'Passwords must match')
         .required('Repeat Password is required'),
     }),
-    onSubmit: async values => {
+  
+    onSubmit: async (values) => {
       const { username, email, password } = values;
+      setRegisterError(null);
       try {
-        await dispatch(
-          registerUser({ name: username, email, password })
-        ).unwrap();
+        await dispatch(registerUser({ username, email, password })).unwrap();
         navigate('/login');
       } catch (error) {
-        handleError(error);
+        setRegisterError(error.message || 'An unexpected error occurred.');
       }
     },
   });
 
-  const getPasswordStrength = password => {
+  const getPasswordStrength = (password) => {
     if (password.length < 6) return 1;
     if (password.length < 8) return 2;
     if (password.length < 10) return 3;
     return 4;
   };
 
-  const handlePasswordChange = e => {
+  const handlePasswordChange = (e) => {
     formik.handleChange(e);
     const password = e.target.value;
     setPasswordStrength(getPasswordStrength(password));
-  };
-
-  const handleRepeatPasswordChange = e => {
-    formik.handleChange(e);
   };
 
   const renderStrengthBar = () => {
@@ -85,15 +82,6 @@ const Register = () => {
     return <div className={styles.strengthBar}>{segments}</div>;
   };
 
-  const handleError = error => {
-    if (error.response && error.response.data) {
-      const errorMessage = error.response.data.message || 'An error occurred';
-      alert(errorMessage);
-    } else {
-      alert('An unknown error occurred. Please try again.');
-    }
-  };
-
   return (
     <div className={styles.boxForm}>
       <div className={styles.registerBox}>
@@ -104,7 +92,6 @@ const Register = () => {
           </div>
 
           <div className={styles.labelBox}>
-           
             <div className={styles.inputBox}>
               <FaUser className={styles.userIcon} />
               <input
@@ -113,6 +100,7 @@ const Register = () => {
                 placeholder="Username"
                 {...formik.getFieldProps('username')}
                 className={styles.inputField}
+                autoComplete="username"
               />
             </div>
             {formik.touched.username && formik.errors.username ? (
@@ -121,7 +109,6 @@ const Register = () => {
           </div>
 
           <div className={styles.labelBox}>
-           
             <div className={styles.inputBox}>
               <MdEmail className={styles.emailIcon} />
               <input
@@ -130,6 +117,7 @@ const Register = () => {
                 placeholder="E-mail"
                 {...formik.getFieldProps('email')}
                 className={styles.inputField}
+                autoComplete="email"
               />
             </div>
             {formik.touched.email && formik.errors.email ? (
@@ -138,7 +126,6 @@ const Register = () => {
           </div>
 
           <div className={styles.labelBox}>
-            
             <div className={styles.inputBox}>
               <IoMdLock className={styles.passwordIcon} />
               <input
@@ -148,6 +135,7 @@ const Register = () => {
                 {...formik.getFieldProps('password')}
                 onChange={handlePasswordChange}
                 className={styles.inputField}
+                autoComplete="new-password"
               />
               <button
                 type="button"
@@ -167,7 +155,6 @@ const Register = () => {
           </div>
 
           <div className={styles.labelBox}>
-           
             <div className={styles.inputBox}>
               <IoMdLock className={styles.passwordIcon} />
               <input
@@ -175,8 +162,9 @@ const Register = () => {
                 type={showRepeatPassword ? 'text' : 'password'}
                 placeholder="Confirm Password"
                 {...formik.getFieldProps('repeatPassword')}
-                onChange={handleRepeatPasswordChange}
+                onChange={formik.handleChange}
                 className={styles.inputField}
+                autoComplete="new-password"
               />
               <button
                 type="button"
@@ -196,11 +184,13 @@ const Register = () => {
             {renderStrengthBar()}
           </div>
 
+          {registerError && <p className={styles.error}>{registerError}</p>}
+
           <div className={styles.buttonBox}>
             <div>
-              <button className={styles.registerButton}>
-                <Link to="/register">Register</Link>
-              </button>
+            <button type="submit" className={styles.registerButton}>
+  Register
+</button>
             </div>
 
             <div className={styles.loginButtonContainer}>
@@ -208,7 +198,6 @@ const Register = () => {
                 Log in
               </button>
             </div>
-
           </div>
         </form>
       </div>
