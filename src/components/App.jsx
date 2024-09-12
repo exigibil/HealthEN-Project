@@ -5,28 +5,29 @@ import Slimmom from './Slimmom/Slimmom';
 import LoginPage from './Login/Login';
 import RegisterPage from './Register/Register';
 import Navbar from './Navbar/Navbar';
-import { getIsLoggedIn } from './redux/selectors';
-import styles from './Login/Login.module.css';
 import Calculator from './Calculator/Calculator';
 import Diary from './Diary/Diary'; 
 import { logoutUser } from './redux/authSlice'; 
+import { getIsLoggedIn } from './redux/selectors'; 
+import styles from './Login/Login.module.css';
 
 export const App = () => {
   const isLoggedIn = useSelector(getIsLoggedIn);
   const dispatch = useDispatch();
 
+
+
   const handleLogout = () => {
     dispatch(logoutUser());
     window.location.reload(); 
   };
-  
-
 
   return (
     <Router>
       <div className={styles.appContainer}>
         <header>
-        <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+          <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+          {isLoggedIn && <p>Welcome!</p>} 
         </header>
         <main className={styles.componentContainer}>
           <Routes>

@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { logoutUser } from '../redux/authSlice';
-import { useNavigate } from 'react-router-dom';
 import styles from './Diary.module.css';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import ReactDatePicker from 'react-datepicker';
@@ -13,9 +10,8 @@ function Diary() {
   const [foodName, setFoodName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const user = useSelector(state => state.auth.user);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+
+  
 
   // Definirea produselor direct în componentă
   const productsData = [

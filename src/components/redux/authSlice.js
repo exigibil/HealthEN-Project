@@ -46,9 +46,14 @@ export const loginUser = createAsyncThunk(
         'http://localhost:8000/food/users/login',
         { email, password }
       );
-      const { token, user } = response.data;
+
+      console.log('Login response:', response.data);
+
+      const { token, user } = response.data.data;
+
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
+
       return { token, user };
     } catch (error) {
       console.error('Login failed:', error.message);
@@ -72,13 +77,21 @@ export const logoutUser = createAsyncThunk(
 );
 
 // Get userName
-export const userName = createAsyncThunk(
+export const myUsername = createAsyncThunk(
   'user/refresh',
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(
-        'http://localhost:8000/food/users/current'
-      );
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await axios.get('http://localhost:8000/food/users/current', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
       return response.data;
     } catch (error) {
       console.error('User refresh failed:', error.message);
@@ -86,6 +99,7 @@ export const userName = createAsyncThunk(
     }
   }
 );
+
 
 
 const authSlice = createSlice({
@@ -135,14 +149,14 @@ const authSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload;
       })
-      .addCase(userName.pending, state => {
+      .addCase(myUsername.pending, state => {
         state.status = 'loading';
       })
-      .addCase(userName.fulfilled, (state, action) => {
-        state.user = action.payload; 
+      .addCase(myUsername.fulfilled, (state, action) => {
+        state.user = action.payload; // Store user data
         state.isLoggedIn = true;
       })
-      .addCase(userName.rejected, (state, action) => {
+      .addCase(myUsername.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       });

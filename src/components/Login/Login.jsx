@@ -28,7 +28,8 @@ const LoginPage = () => {
     onSubmit: async values => {
       const { email, password } = values;
       try {
-        await dispatch(loginUser({ email, password })).unwrap();
+        const { token, user } = await dispatch(loginUser({ email, password })).unwrap();
+        console.log('Login successful:', { token, user }); 
         navigate('/HealthEN-Project');
       } catch (error) {
         console.error('Login failed:', error.message);
@@ -36,6 +37,7 @@ const LoginPage = () => {
       }
     },
   });
+  
 
   return (
     <div className={styles.appContainer}>
