@@ -1,0 +1,31 @@
+.calendarIcon {
+    width: 20px;
+    height: 20px;
+    color: #212121;
+    cursor: pointer;
+    transition: scale 250ms ease-in-out, box-shadow 250ms ease-in-out;
+    &:hover {
+      scale: 1.1;
+      box-shadow: 0px 4px 10px 0px #fc842d80;
+    }
+}
+
+.dateButton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border-radius: 30px;
+    border: 0px;
+    color: #000000;
+    font-family: Verdana;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 17.01px;
+    letter-spacing: 0.04em;
+    text-align: center;
+    transition: scale 250ms ease-in-out, box-shadow 250ms ease-in-out;
+    text-transform: uppercase;
+    cursor: pointer;
+}

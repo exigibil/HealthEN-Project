@@ -4,6 +4,7 @@ import { App } from 'components/App';
 import './index.css';
 import { Provider } from 'react-redux';
 import { store } from './components/redux/store';
+import './components/redux/interceptors';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(

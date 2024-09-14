@@ -27,15 +27,16 @@ export const App = () => {
       <div className={styles.appContainer}>
         <header>
           <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} />
-          {isLoggedIn && <p>Welcome!</p>} 
+         
         </header>
         <main className={styles.componentContainer}>
           <Routes>
-            <Route path="/" element={<Navigate to={isLoggedIn ? "/Healthen-Project" : "/home"} />} />
+            <Route path="/" element={<Navigate to={ "/home"} />} />
             <Route path="/home" element={<Calculator />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/diary" element={isLoggedIn ? <Diary /> : <Navigate to="/login" />} />
+            <Route path="/private-calc" element={isLoggedIn ? <Calculator /> : <Navigate to="/login" />} />
             <Route path="/HealthEN-Project" element={isLoggedIn ? <Slimmom /> : <Navigate to="/home" />} />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>

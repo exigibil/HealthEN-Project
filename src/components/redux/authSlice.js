@@ -38,6 +38,7 @@ export const registerUser = createAsyncThunk(
 );
 
 // User login
+
 export const loginUser = createAsyncThunk(
   'user/login',
   async ({ email, password }, thunkAPI) => {
@@ -46,15 +47,13 @@ export const loginUser = createAsyncThunk(
         'http://localhost:8000/food/users/login',
         { email, password }
       );
-
-      console.log('Login response:', response.data);
-
-      const { token, user } = response.data.data;
-
+      
+      const { token, refreshToken, user } = response.data.data;
+      
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-
-      return { token, user };
+      localStorage.setItem('refreshToken', refreshToken);
+      
+      return { token, refreshToken, user };
     } catch (error) {
       console.error('Login failed:', error.message);
       return thunkAPI.rejectWithValue(error.message);

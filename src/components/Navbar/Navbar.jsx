@@ -5,12 +5,12 @@ import styles from './Navbar.module.css';
 import LogedIcon from '../Img/svg/logo_logged.svg';
 import LoginIcon from '../Img/svg/logo_mobile.svg';
 import { ImExit } from 'react-icons/im';
-import { getIsLoggedIn } from '../redux/selectors'; // Verifică dacă utilizatorul este autentificat
-import { myUsername } from '../redux/authSlice'; // Importă thunk-ul
+import { getIsLoggedIn } from '../redux/selectors'; 
+import { myUsername } from '../redux/authSlice'; 
 
 function Navbar({ onLogout }) {
   const [username, setUsername] = useState(null);
-  const isLoggedIn = useSelector(getIsLoggedIn); // Verifică dacă utilizatorul este autentificat
+  const isLoggedIn = useSelector(getIsLoggedIn); 
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function Navbar({ onLogout }) {
         try {
           const resultAction = await dispatch(myUsername());
           if (myUsername.fulfilled.match(resultAction)) {
-            setUsername(resultAction.payload.username); // Setează username-ul în starea componentului
+            setUsername(resultAction.payload.username); 
           } else {
             console.error('Failed to fetch username:', resultAction.payload);
           }
@@ -30,7 +30,7 @@ function Navbar({ onLogout }) {
 
       fetchUsername();
     } else {
-      setUsername(null); // Resetează username-ul dacă utilizatorul nu este autentificat
+      setUsername(null); 
     }
   }, [dispatch, isLoggedIn]);
 
@@ -53,7 +53,7 @@ function Navbar({ onLogout }) {
               </div>
             </div>
             <div className={styles.userName}>
-              Welcome, {username || 'User'} {/* Afișează username-ul */}
+              Welcome, {username || 'User'}
             </div>
             <div className={styles.dash}></div>
             <div className={styles.exitContainer} onClick={onLogout}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,8 +11,6 @@ import { loginUser } from '../redux/authSlice';
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-
 
   const formik = useFormik({
     initialValues: {
@@ -28,8 +26,15 @@ const LoginPage = () => {
     onSubmit: async values => {
       const { email, password } = values;
       try {
-        const { token, user } = await dispatch(loginUser({ email, password })).unwrap();
-        console.log('Login successful:', { token, user }); 
+        // Aici apelăm acțiunea de login din redux și despachetăm răspunsul
+        const { token, refreshToken, user } = await dispatch(loginUser({ email, password })).unwrap();
+        
+        // Stocăm token-urile în localStorage
+        localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken);
+        
+        // Navigăm către pagina principală după login
+        console.log('Login successful:', { token, user });
         navigate('/HealthEN-Project');
       } catch (error) {
         console.error('Login failed:', error.message);
@@ -37,7 +42,6 @@ const LoginPage = () => {
       }
     },
   });
-  
 
   return (
     <div className={styles.appContainer}>
