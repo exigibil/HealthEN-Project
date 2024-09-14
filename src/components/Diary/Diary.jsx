@@ -58,9 +58,26 @@ function Diary() {
     }
   }, [foodName, allProducts]);
 
-  const formatDate = date => {
-    return date.toISOString();
+  const formatDate = (dateInput) => {
+    let date;
+  
+    if (dateInput instanceof Date) {
+      date = dateInput;
+    } else {
+      date = new Date(dateInput);
+    }
+  
+    if (isNaN(date.getTime())) {
+      return 'Invalid date';
+    }
+  
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = String(date.getFullYear()).slice(-2); // Last 2 digits of the year
+  
+    return `${day}-${month}-${year}`;
   };
+  
 
   const handleAddFood = () => {
     if (foodName && quantity && !isNaN(quantity)) {
@@ -73,15 +90,13 @@ function Diary() {
         return;
       }
 
-      const dateKey = formatDate(selectedDate);
-
       const grams = parseInt(quantity, 10);
 
       dispatch(
         addFood({
           name: foodName,
           grams: grams,
-          date: dateKey,
+          date: formatDate(selectedDate),
           calories: totalKcal,
         })
       )
@@ -90,6 +105,7 @@ function Diary() {
           setFoodName('');
           setQuantity('');
           setSelectedProduct(null);
+          dispatch(fetchDiary()); 
         })
         .catch(error => {
           console.error('Add food error:', error);
@@ -101,12 +117,10 @@ function Diary() {
 
   const formatDiaryEntries = () => {
     return diaryEntries.map(entry => {
-      const date = new Date(entry.date || entry.createdAt).toDateString();
+      const date = new Date(entry.date || entry.createdAt);
 
       const totalCaloriesForEntry = entry.foodItems.reduce(
-        (total, foodItem) => {
-          return total + foodItem.calories;
-        },
+        (total, foodItem) => total + foodItem.calories,
         0
       );
 
@@ -114,9 +128,11 @@ function Diary() {
         date,
         totalCaloriesForEntry: totalCaloriesForEntry.toFixed(2),
         foods: entry.foodItems.map(foodItem => ({
+          id: foodItem._id,
           name: foodItem.name,
           grams: foodItem.grams,
           calories: foodItem.calories.toFixed(2),
+          date: formatDate(foodItem.date),
         })),
       };
     });
@@ -132,17 +148,17 @@ function Diary() {
         ).toFixed(2)
       : 0;
 
-      const handleDelete = foodItemId => {
-        dispatch(deleteFood(foodItemId))
-          .unwrap()
-          .then(() => {
-            console.log('Food item removed successfully');
-            
-          })
-          .catch(error => {
-            console.error('Delete food error:', error);
-          });
-      };
+  const handleDelete = foodItemId => {
+    dispatch(deleteFood(foodItemId))
+      .unwrap()
+      .then(() => {
+        console.log('Food item removed successfully');
+        dispatch(fetchDiary()); 
+      })
+      .catch(error => {
+        console.error('Delete food error:', error);
+      });
+  };
 
   return (
     <>
@@ -151,7 +167,7 @@ function Diary() {
 
         <div className={styles.calendarContainer}>
           <div className={styles.dateText}>
-            {selectedDate ? selectedDate.toDateString() : 'Select a date'}
+          {selectedDate ? selectedDate.toDateString() : 'Select a date'}
           </div>
           <div className={styles.datePicker}>
             <ReactDatePicker
@@ -213,28 +229,20 @@ function Diary() {
           <h3>Diary Entries</h3>
           {diaryEntriesFormatted.map((entry, index) => (
             <div key={index} className={styles.diaryEntry}>
-              <div>{entry.date}</div>
               
               <div className={styles.foodItemsContainer}>
                 {entry.foods.map((food, idx) => (
                   <div key={idx} className={styles.foodItem}>
+                    <div>{food.date}</div>
                     <div>{food.name}</div>
                     <div>{food.grams}g</div>
                     <div>{food.calories} Kcal</div>
                     <div>
-                      {diaryEntries.map(entry => (
-                        <div key={entry._id}>
-                          {entry.foodItems.map(foodItem => (
-                            <div key={foodItem._id}>
-                              <button
-                                onClick={() => handleDelete(foodItem._id)}
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      ))}
+                      <button
+                        onClick={() => handleDelete(food.id)}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -242,7 +250,6 @@ function Diary() {
             </div>
           ))}
         </div>
-       
       </div>
       <Footer />
     </>
