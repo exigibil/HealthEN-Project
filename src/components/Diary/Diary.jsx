@@ -1,120 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Diary.module.css';
+import Modal from '../Modal/Modal';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Footer from 'components/Footer/Footer';
+import Footer from '../Footer/Footer';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  fetchDiary,
-  fetchFood,
-  searchFood,
-  addFood,
-  deleteFood,
-} from '../redux/foodSlice';
-import { getDiary, getItems } from '../redux/selectors';
-import { debounce } from 'lodash';
+import { fetchDiary, fetchFood, deleteFood } from '../redux/foodSlice';
+import { getDiary } from '../redux/selectors';
 import CustomInput from '../Custominput/CustomInput';
 
 function Diary() {
   const dispatch = useDispatch();
-  const [foodName, setFoodName] = useState('');
-  const [quantity, setQuantity] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [showSearchResults, setShowSearchResults] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const diaryEntries = useSelector(getDiary);
-  const allProducts = useSelector(getItems);
   const isLoading = useSelector(state => state.food.isLoading);
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
 
   useEffect(() => {
     dispatch(fetchDiary());
     dispatch(fetchFood());
   }, [dispatch]);
 
-  const searchProductsByName = debounce(name => {
-    if (name.trim()) {
-      dispatch(searchFood({ title: name }));
-    } else {
-      setFilteredProducts([]);
-    }
-  }, 300);
-
-  const handleSearchChange = e => {
-    const name = e.target.value;
-    setFoodName(name);
-    setShowSearchResults(name.trim().length > 0);
-    searchProductsByName(name);
-  };
-
-  useEffect(() => {
-    if (allProducts) {
-      const filtered = allProducts.filter(
-        product =>
-          product.title &&
-          product.title.toLowerCase().includes(foodName.toLowerCase())
-      );
-      setFilteredProducts(filtered);
-    }
-  }, [foodName, allProducts]);
-
-  const formatDate = (dateInput) => {
+  // Helper function to format date as DD-MM-YY
+  const formatDate = dateInput => {
     let date;
-  
     if (dateInput instanceof Date) {
       date = dateInput;
     } else {
       date = new Date(dateInput);
     }
-  
     if (isNaN(date.getTime())) {
       return 'Invalid date';
     }
-  
     const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const year = String(date.getFullYear()).slice(-2); // Last 2 digits of the year
-  
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
     return `${day}-${month}-${year}`;
   };
-  
 
-  const handleAddFood = () => {
-    if (foodName && quantity && !isNaN(quantity)) {
-      const product = allProducts.find(
-        p => p.title.toLowerCase() === foodName.toLowerCase()
-      );
-
-      if (!product) {
-        alert('Product not found!');
-        return;
-      }
-
-      const grams = parseInt(quantity, 10);
-
-      dispatch(
-        addFood({
-          name: foodName,
-          grams: grams,
-          date: formatDate(selectedDate),
-          calories: totalKcal,
-        })
-      )
-        .unwrap()
-        .then(() => {
-          setFoodName('');
-          setQuantity('');
-          setSelectedProduct(null);
-          dispatch(fetchDiary()); 
-        })
-        .catch(error => {
-          console.error('Add food error:', error);
-        });
-    } else {
-      alert('Please provide valid food name and quantity');
-    }
-  };
-
+  // Format diary entries into a more usable structure
   const formatDiaryEntries = () => {
     return diaryEntries.map(entry => {
       const date = new Date(entry.date || entry.createdAt);
@@ -132,28 +60,31 @@ function Diary() {
           name: foodItem.name,
           grams: foodItem.grams,
           calories: foodItem.calories.toFixed(2),
-          date: formatDate(foodItem.date),
+          date: new Date(foodItem.date).toISOString().split('T')[0], // Format as YYYY-MM-DD
         })),
       };
     });
   };
 
-  const diaryEntriesFormatted = formatDiaryEntries();
+  // Filter diary entries based on selected date
+  const filterDiaryEntriesByDate = () => {
+    const formattedSelectedDate = selectedDate.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+    return formatDiaryEntries().filter(entry =>
+      entry.foods.some(food => {
+        const foodDate = new Date(food.date).toISOString().split('T')[0];
+        return foodDate === formattedSelectedDate;
+      })
+    );
+  };
 
-  const totalKcal =
-    selectedProduct && quantity
-      ? (
-          (selectedProduct.calories / selectedProduct.weight) *
-          parseFloat(quantity)
-        ).toFixed(2)
-      : 0;
+  const diaryEntriesFiltered = filterDiaryEntriesByDate();
 
+  // Handler to delete a food item
   const handleDelete = foodItemId => {
     dispatch(deleteFood(foodItemId))
       .unwrap()
       .then(() => {
-        console.log('Food item removed successfully');
-        dispatch(fetchDiary()); 
+        dispatch(fetchDiary());
       })
       .catch(error => {
         console.error('Delete food error:', error);
@@ -167,91 +98,67 @@ function Diary() {
 
         <div className={styles.calendarContainer}>
           <div className={styles.dateText}>
-          {selectedDate ? selectedDate.toDateString() : 'Select a date'}
+            {selectedDate ? selectedDate.toDateString() : 'Select a date'}
           </div>
-          <div className={styles.datePicker}>
+          <div className="date-picker-container">
             <ReactDatePicker
-              selected={selectedDate}
-              onChange={date => setSelectedDate(date)}
-              customInput={<CustomInput />}
-              className={styles.datePicker}
+               onChange={date => setSelectedDate(date)}
+              customInput={
+                <CustomInput
+                  value={selectedDate ? formatDate(selectedDate) : ''}
+                />
+              }
+              dateFormat="dd-MM-yy"
+              className="date-picker"
             />
           </div>
-        </div>
-
-        <div className={styles.seachDiary}>
-          <div className={styles.foodForm}>
-            <input
-              type="text"
-              placeholder="Product name"
-              value={foodName}
-              onChange={handleSearchChange}
-            />
-            <input
-              type="number"
-              placeholder="Grams"
-              value={quantity}
-              onChange={e => setQuantity(e.target.value)}
-            />
-            <div className={styles.totalKcal}>{totalKcal} Kcal</div>
-          </div>
-
-          {showSearchResults && (
-            <div className={styles.searchContainer}>
-              {filteredProducts.length > 0 && (
-                <ul className={styles.searchResults}>
-                  {filteredProducts.map(product => (
-                    <li
-                      key={product._id}
-                      onClick={() => {
-                        setFoodName(product.title);
-                        setSelectedProduct(product);
-                        setShowSearchResults(false);
-                      }}
-                    >
-                      {product.title} - {product.calories} kcal/{product.weight}
-                      g
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          )}
         </div>
 
         <div className={styles.buttonContainer}>
-          <button onClick={handleAddFood} disabled={isLoading}>
-            {isLoading ? 'Adding...' : '+'}
-          </button>
+          <button onClick={toggleModal}>Add Food</button>
         </div>
 
         <div className={styles.diaryEntries}>
-          <h3>Diary Entries</h3>
-          {diaryEntriesFormatted.map((entry, index) => (
-            <div key={index} className={styles.diaryEntry}>
-              
-              <div className={styles.foodItemsContainer}>
-                {entry.foods.map((food, idx) => (
-                  <div key={idx} className={styles.foodItem}>
-                    <div>{food.date}</div>
-                    <div>{food.name}</div>
-                    <div>{food.grams}g</div>
-                    <div>{food.calories} Kcal</div>
-                    <div>
-                      <button
-                        onClick={() => handleDelete(food.id)}
-                      >
-                        Delete
-                      </button>
+          {diaryEntriesFiltered.length > 0 ? (
+            diaryEntriesFiltered.map((entry, index) => (
+              <div key={index} className={styles.diaryEntry}>
+                <div className={styles.foodItemsContainer}>
+                  {entry.foods.map((food, idx) => (
+                    <div key={idx} className={styles.foodItem}>
+                      <div className={styles.itemAdd}>
+                        <div>{formatDate(food.date)}</div>
+                        <div>{food.name}</div>
+                        <div>{food.grams} g</div>
+                        <div>{food.calories} Kcal</div>
+                      </div>
+                      <div>
+                        <button
+                          className={styles.deleteBtn}
+                          onClick={() => handleDelete(food.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>No food items for this date.</p>
+          )}
         </div>
+
+        {showModal && (
+          <Modal
+            onClose={toggleModal}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            isLoading={isLoading}
+          />
+        )}
       </div>
-      <Footer />
+      <Footer selectedDate={selectedDate} />
     </>
   );
 }

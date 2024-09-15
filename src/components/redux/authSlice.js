@@ -40,22 +40,24 @@ export const registerUser = createAsyncThunk(
 // User login
 
 export const loginUser = createAsyncThunk(
-  'user/login',
+  'auth/login',
   async ({ email, password }, thunkAPI) => {
     try {
       const response = await axios.post(
         'http://localhost:8000/food/users/login',
-        { email, password }
+        {
+          email,
+          password,
+        }
       );
-      
+
       const { token, refreshToken, user } = response.data.data;
-      
+    
       localStorage.setItem('token', token);
       localStorage.setItem('refreshToken', refreshToken);
-      
+
       return { token, refreshToken, user };
     } catch (error) {
-      console.error('Login failed:', error.message);
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -85,11 +87,14 @@ export const myUsername = createAsyncThunk(
         throw new Error('No authentication token found');
       }
 
-      const response = await axios.get('http://localhost:8000/food/users/current', {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const response = await axios.get(
+        'http://localhost:8000/food/users/current',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
       return response.data;
     } catch (error) {
@@ -99,13 +104,43 @@ export const myUsername = createAsyncThunk(
   }
 );
 
+//post kcal
+export const patchKcal = createAsyncThunk(
+  'user/dailyKcal',
+  async ({ kcal }, thunkAPI) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
 
+      const response = await axios.post(
+        'http://localhost:8000/food/users/dailyKcal',
+        { kcal },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error('Patch daily kcal failed:', error.message);
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logout(state) {
+    setUser: (state, action) => {
+      state.user = action.payload;
+      state.isLoggedIn = true;
+    },
+    logout: (state) => {
       state.user = null;
       state.token = null;
       state.isLoggedIn = false;
@@ -113,28 +148,31 @@ const authSlice = createSlice({
   },
   extraReducers: builder => {
     builder
+      // Handle user registration
       .addCase(registerUser.pending, state => {
         state.status = 'loading';
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.user = action.payload.user; 
+        state.user = action.payload.user;
         state.isLoggedIn = true;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       })
+      // Handle user login
       .addCase(loginUser.pending, state => {
         state.status = 'loading';
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
+        state.token = action.payload.token;
         state.isLoggedIn = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.status = 'failed';
         state.error = action.payload;
       })
+      // Handle user logout
       .addCase(logoutUser.pending, state => {
         state.status = 'loading';
       })
@@ -148,19 +186,34 @@ const authSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload;
       })
+      // Handle user refresh
       .addCase(myUsername.pending, state => {
         state.status = 'loading';
       })
       .addCase(myUsername.fulfilled, (state, action) => {
-        state.user = action.payload; // Store user data
+        state.user = action.payload;
         state.isLoggedIn = true;
       })
       .addCase(myUsername.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      // Handle patch kcal
+      .addCase(patchKcal.pending, state => {
+        state.status = 'loading';
+      })
+      .addCase(patchKcal.fulfilled, (state, action) => {
+        if (state.user) {
+          state.user.dailyKcal = action.payload.dailyKcal;
+        }
+        state.status = 'succeeded';
+      })
+      .addCase(patchKcal.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       });
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { setUser, logout } = authSlice.actions;
 export const authReducer = authSlice.reducer;

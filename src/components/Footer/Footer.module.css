@@ -1,84 +1,61 @@
-.diaryContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    background-color: #f0f1f3;
-  
-    .dayDiary {
-      font-family: Verdana;
-      line-height: 17.01px;
-      letter-spacing: 0.04em;
-      text-align: left;
-      opacity: 0px;
-      padding: 40px 20px;
-  
-      span {
-          width: 280px;
-          height: 20px;
-          font-size: 14px;
-          font-weight: 700;
-          color: #212121;
-          
-      }
-          
-      }
-      .dayStats {
-         list-style-type: none;
-         display: flex;
-         flex-direction: column;
-         gap: 20px;
-          li {
-           font-family: Verdana;
-           font-size: 14px;
-           font-weight: 400;
-           line-height: 17.01px;
-           letter-spacing: 0.04em;
-           text-align: left;
-           color: #9B9FAA;
-           gap: 0px;
-           opacity: 0px;
-        
-   
-          }
+.footerContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+   width: 100%;
+  background-color: #f0f1f3;
+  padding: 1rem;
+  @media (max-width: 768px) {
+      padding: 0.5rem;
     }
-  
-    .foodNot {
-      font-family: Verdana;
-      line-height: 17.01px;
-      letter-spacing: 0.04em;
-      text-align: left;
-      opacity: 0px;
-      padding: 40px 20px;
+
+  .titleDiary {
+    font-family: Verdana;
+    line-height: 17.01px;
+    letter-spacing: 0.04em;
+    text-align: left;
+    opacity: 0px;
+    padding: 40px 20px;
+    
+
+    span {
+      
       display: flex;
-      flex-direction: column;
-      gap: 20px;
-  
-      span {
-          width: 280px;
-          height: 20px;
-          font-size: 14px;
-          font-weight: 700;
-          color: #212121;  
-      }
-  
-      .dietNot {
-          font-family: Verdana;
-          font-size: 14px;
-          font-weight: 400;
-          line-height: 17.01px;
-          letter-spacing: 0.04em;
-          text-align: left;
-           font-family: Verdana;
-          font-size: 14px;
-          font-weight: 400;
-          line-height: 17.01px;
-          letter-spacing: 0.04em;
-          text-align: left;
-          color: #9B9FAA;
-  
-      }
-  
+      justify-content: center;
+      align-items: center;
+      width: 280px;
+      height: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #212121;
     }
   }
-  
+
+  .dayStats {
+    display: flex;
+    flex-direction: column;
+    ustify-content: center;
+    font-family: Verdana;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17.01px;
+    letter-spacing: 0.04em;
+    text-align: left;
+    color: #9b9faa;
+    gap: 50px;
+    opacity: 0px;
+
+
+    .dayDiary {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+  .procentDay {
+    color: #000000;
+  }
+
+ 
+}
+

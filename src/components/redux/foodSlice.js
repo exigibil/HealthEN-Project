@@ -7,6 +7,7 @@ const initialState = {
   diaryEntries: [],
   isLoading: false,
   error: null,
+  forbiddenFoods: [],
 };
 
 const getAuthToken = () => {
@@ -85,7 +86,7 @@ export const searchFood = createAsyncThunk(
 
 export const addFood = createAsyncThunk(
   'food/addFood',
-  async ({ name, grams, date, calories }, thunkAPI) => { 
+  async ({ name, grams, date, calories }, thunkAPI) => {
     try {
       const token = getAuthToken();
       const response = await axios.post(
@@ -96,7 +97,7 @@ export const addFood = createAsyncThunk(
               name,
               grams,
               date,
-              calories, 
+              calories,
             },
           ],
         },
@@ -113,7 +114,6 @@ export const addFood = createAsyncThunk(
   }
 );
 
-
 export const deleteFood = createAsyncThunk(
   'food/deleteFood',
   async (foodItemId, thunkAPI) => {
@@ -125,10 +125,10 @@ export const deleteFood = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          data: { foodItemId }, 
+          data: { foodItemId },
         }
       );
-      return response.data.diary; 
+      return response.data.diary;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
@@ -137,11 +137,11 @@ export const deleteFood = createAsyncThunk(
 
 export const calculatorPublic = createAsyncThunk(
   'food/calculatorPublic',
-  async (desiredFormula, forbiddenFoods, thunkAPI) => {
+  async ({ height, age, desiredWeight, bloodType }, thunkAPI) => {
     try {
       const response = await axios.post(
         'http://localhost:8000/food/calculator',
-        { desiredFormula, forbiddenFoods }
+        { height, age, desiredWeight, bloodType }
       );
       return response.data;
     } catch (error) {
@@ -152,11 +152,17 @@ export const calculatorPublic = createAsyncThunk(
 
 export const calculatorPrivat = createAsyncThunk(
   'food/calculatorPrivat',
-  async (desiredFormula, forbiddenFoods, thunkAPI) => {
+  async ({ height, age, desiredWeight, bloodType }, thunkAPI) => {
     try {
+      const token = getAuthToken();
       const response = await axios.post(
-        'http://localhost:8000/food/calculator',
-        { desiredFormula, forbiddenFoods }
+        'http://localhost:8000/food/private/calculator',
+        { height, age, desiredWeight, bloodType },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       return response.data;
     } catch (error) {
@@ -260,15 +266,13 @@ const foodSlice = createSlice({
         state.error = null;
       })
       .addCase(calculatorPublic.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.error = null;
-        state.items.push(action.payload);
+        state.forbiddenFoods = action.payload.forbiddenFoods || [];
       })
       .addCase(calculatorPublic.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
+        console.error('Failed to fetch calculator data:', action.payload);
       })
-      // calculatorPrivat
+
+      // Calculator Privat
       .addCase(calculatorPrivat.pending, state => {
         state.isLoading = true;
         state.error = null;
@@ -276,7 +280,7 @@ const foodSlice = createSlice({
       .addCase(calculatorPrivat.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.items.push(action.payload);
+        state.forbiddenFoods = action.payload.forbiddenFoods || [];
       })
       .addCase(calculatorPrivat.rejected, (state, action) => {
         state.isLoading = false;

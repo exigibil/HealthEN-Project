@@ -1,10 +1,12 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';  
+import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
-import { loginUser } from '../redux/authSlice';
+import { MdEmail } from 'react-icons/md';
+import { IoMdLock } from 'react-icons/io';
 import styles from './Login.module.css';
+import { loginUser } from '../redux/authSlice';
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -21,17 +23,18 @@ const LoginPage = () => {
         .required('Email is required'),
       password: Yup.string().required('Password is required'),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async values => {
       const { email, password } = values;
       try {
+       
+        const { token, refreshToken, user } = await dispatch(loginUser({ email, password })).unwrap();
         
-        const { token, user } = await dispatch(loginUser({ email, password })).unwrap();
-
+        
         localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken);
         
-        console.log('Login successful:', { token, user });
-
-   
+        
+        console.log('Login successful:', { token, user});
         navigate('/HealthEN-Project');
       } catch (error) {
         console.error('Login failed:', error.message);
@@ -42,18 +45,21 @@ const LoginPage = () => {
 
   return (
     <div className={styles.appContainer}>
-      <span className={styles.titleLogin}><h2>LOG IN</h2></span>
-      
+      <span className={styles.titleLogin}>
+        <h2>LOG IN</h2>
+      </span>
+
       <form onSubmit={formik.handleSubmit} className={styles.loginForm}>
-    
         <div className={styles.formGroup}>
           <label htmlFor="email" className={styles.formLabel}>
+            <MdEmail className={styles.icon} />
             <input
               id="email"
               type="email"
               placeholder="Email"
               {...formik.getFieldProps('email')}
               className={styles.formInput}
+              autoComplete="email"
             />
           </label>
           {formik.touched.email && formik.errors.email ? (
@@ -63,12 +69,14 @@ const LoginPage = () => {
 
         <div className={styles.formGroup}>
           <label htmlFor="password" className={styles.formLabel}>
+            <IoMdLock className={styles.icon} />
             <input
               id="password"
               type="password"
               placeholder="Password"
               {...formik.getFieldProps('password')}
               className={styles.formInput}
+              autoComplete="current-password"
             />
           </label>
           {formik.touched.password && formik.errors.password ? (
@@ -76,15 +84,25 @@ const LoginPage = () => {
           ) : null}
         </div>
 
-     
         <div className={styles.formGroup}>
-          <button type="submit" className={styles.loginButton}>Log in</button>
+          <div className={styles.buttonContainer}>
+            <div className={styles.loginButtonContainer}>
+              <button type="submit" className={styles.loginButton}>
+                Log in
+              </button>
+            </div>
+
+            <div>
+              <button className={styles.registerButton}>
+                <Link to="/register">
+                  Register
+                </Link>
+              </button>
+            </div>
+          </div>
         </div>
 
-   
-        <div>
-          <Link to="/register">Register</Link>
-        </div>
+        <div className={styles.formGroup}></div>
       </form>
     </div>
   );
