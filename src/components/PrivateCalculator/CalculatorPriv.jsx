@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { calculatorPrivat } from '../redux/foodSlice'; // Ensure this path is correct
+import { calculatorPrivat } from '../redux/foodSlice';
+import { patchKcal } from '../redux/authSlice';
 import styles from './Calculator.module.css';
 import { IoReturnDownBack } from 'react-icons/io5';
 
@@ -33,11 +34,20 @@ function CalculatorPriv() {
     setError(null);
 
     try {
-      const action = await dispatch(calculatorPrivat({ height, age, desiredWeight, bloodType }));
+      const calculatorAction = await dispatch(
+        calculatorPrivat({ height, age, desiredWeight, bloodType })
+      );
 
-      if (action.type === 'food/calculatorPrivat/fulfilled') {
+      if (calculatorAction.type === 'food/calculatorPrivat/fulfilled') {
         setFormSubmitted(true);
-      } else if (action.type === 'food/calculatorPrivat/rejected') {
+
+        const patchKcalAction = await dispatch(patchKcal({ kcal: result }));
+        if (patchKcalAction.type === 'user/dailyKcal/fulfilled') {
+          console.log('Kcal patched successfully');
+        } else {
+          setError('Failed to patch daily kcal.');
+        }
+      } else if (calculatorAction.type === 'food/calculatorPrivat/rejected') {
         setError('Failed to fetch forbidden foods.');
       }
     } catch (error) {
@@ -171,9 +181,9 @@ function CalculatorPriv() {
             </div>
             <ul>
               {forbiddenFoods.length > 0 ? (
-                forbiddenFoods.slice(0, 5).map((food, index) => (
-                  <li key={food._id}>{food.title}</li>
-                ))
+                forbiddenFoods
+                  .slice(0, 5)
+                  .map((food, index) => <li key={food._id}>{food.title}</li>)
               ) : (
                 <li>No forbidden foods found</li>
               )}

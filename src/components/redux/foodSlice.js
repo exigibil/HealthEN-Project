@@ -166,10 +166,12 @@ export const calculatorPrivat = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
+      console.error('API Error:', error); 
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
   }
 );
+
 
 const foodSlice = createSlice({
   name: 'food',
